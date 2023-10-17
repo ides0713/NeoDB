@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 20)
+
+project(NeoDB)
+
+MESSAGE(STATUS "This is Project source dir " ${PROJECT_SOURCE_DIR})
+MESSAGE(STATUS "This is PROJECT_BINARY_DIR dir " ${PROJECT_BINARY_DIR})
+
+ADD_SUBDIRECTORY(src)
