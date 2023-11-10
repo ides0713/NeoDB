@@ -1,0 +1,7 @@
+#include <cstdio>
+#include <threads.h>
+
+int main(int argc, char* argv[])
+{
+    
+}
