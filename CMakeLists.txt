@@ -10,9 +10,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-include_directories(deps/jsoncpp/include)
+# include_directories(deps/jsoncpp/include)
 
-file(GLOB JSONCPP_SOURCE deps/jsoncpp/src/lib_json/*.cpp)
-add_library(jsoncpp STATIC ${JSONCPP_SOURCE})
+# file(GLOB_RECURSE JSONCPP_SOURCE deps/jsoncpp/src/lib_json/*.cpp)
+# file(GLOB_RECURSE JSONCPP_HEADER deps/jsoncpp/inlcude/*.h)
+# add_library(jsoncpp ${JSONCPP_HEADER} ${JSONCPP_SOURCE})
+
+set(PROJECT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 ADD_SUBDIRECTORY(src)

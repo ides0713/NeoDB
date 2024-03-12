@@ -1,4 +1,5 @@
 #include "common/neodb_log.h"
+#include "global.h"
 #include <cstdio>
 #include <cstring>
 

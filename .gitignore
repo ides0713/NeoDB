@@ -34,3 +34,5 @@
 build/
 lib/
 .vscode/
+
+include/server/global.h

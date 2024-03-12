@@ -1,6 +1,5 @@
 #pragma once
 
-#include "global.h"
 #include <cstdarg>
 #include <ctime>
 enum class NLogLevel : int

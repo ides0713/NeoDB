@@ -1,5 +1,5 @@
 #pragma once
-#include <jsoncpp/json/reader.h>
+#include <json/reader.h>
 
 void ServerInit();
 void PrintLogo(int style);
