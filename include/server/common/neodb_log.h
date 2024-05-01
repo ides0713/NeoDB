@@ -1,7 +1,12 @@
 #pragma once
 
+#include "global.h"
 #include <cstdarg>
 #include <ctime>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 enum class NLogLevel : int
 {
 	DEBUG = 0,
@@ -63,18 +68,23 @@ private:
 	time_t time_;
 };
 
+class FileHandler;
+
 class NLogManager
 {
 public:
 	NLogManager(const NLogManager &another) = delete;
 	NLogManager &operator=(const NLogManager &another) = delete;
-	static NLogManager &Instance()
-	{
-		static NLogManager instance;
-		return instance;
-	}
 	void Handle(NLog *log);
+	void Release();
+
+public:
+	static NLogManager &Instance();
 
 private:
-	NLogManager() = default;
+	NLogManager();
+
+private:
+	static void MakeLogDirectory();
+	static void MakeLogFile();
 };

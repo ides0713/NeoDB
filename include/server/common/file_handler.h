@@ -1,4 +1,5 @@
 #pragma once
+
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -6,11 +7,10 @@ namespace fs = std::filesystem;
 class FileHandler
 {
 public:
-	FileHandler(const fs::path &path);
-	bool IsAssociated();
-    
+	FileHandler() = delete;
+	FileHandler(const FileHandler &fhandler) = delete;
 
-private:
-	std::string file_path_;
-	FILE *file_;
+public:
+	static int Write(const fs::path &path, const char *src, int size, const char *mode);
+	static int Read(const fs::path &path, char *dest, int size, const char *mode);
 };

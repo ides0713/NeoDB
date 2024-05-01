@@ -1,18 +1,33 @@
 #include "common/file_handler.h"
 #include <cassert>
+#include <cstdio>
 
-FileHandler::FileHandler(const fs::path &path)
+int FileHandler::Write(const fs::path &path, const char *src, int size, const char *mode)
 {
-    file_ = nullptr;
-	if (path.is_absolute() and fs::exists(path) and fs::is_regular_file(path))
+	FILE *write_file = fopen(path.c_str(), mode);
+
+	if (write_file == nullptr)
 	{
-        file_ = fopen(path.c_str(), "r+");
-        if(file_ != nullptr)
-            file_path_ = std::string(path);
-    }
+		// todo error open file failed
+		assert(false);
+	}
+
+	int ret = fwrite(src, 1, size, write_file);
+	fclose(write_file);
+	return ret;
 }
 
-bool FileHandler::IsAssociated()
+int FileHandler::Read(const fs::path &path, char *dest, int size, const char *mode)
 {
-	return !file_path_.empty() and file_ != nullptr;
+	FILE *read_file = fopen(path.c_str(), mode);
+
+	if (read_file == nullptr)
+	{
+		// todo error open file failed
+		assert(false);
+	}
+
+	int ret = fread(dest, 1, size, read_file);
+	fclose(read_file);
+	return ret;
 }

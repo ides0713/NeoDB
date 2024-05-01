@@ -3,5 +3,5 @@
 
 void resolve_def()
 {
-    printf("erwqoip\n");
+	printf("erwqoip\n");
 }

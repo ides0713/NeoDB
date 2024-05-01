@@ -1,0 +1,14 @@
+{
+	"LOGO_STYLE": {
+		"type": "int",
+		"value": 1
+	},
+	"SERVER_PORT": {
+		"type": "int",
+		"value": 9090
+	},
+	"RELEASE_DIR": {
+		"type": "string",
+		"value": ""
+	}
+}

@@ -3,5 +3,5 @@
 
 void parse_def()
 {
-    printf("agbareqdasv\n");
+	printf("agbareqdasv\n");
 }

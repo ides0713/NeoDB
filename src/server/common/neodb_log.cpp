@@ -1,12 +1,21 @@
 #include "common/neodb_log.h"
-#include "global.h"
+#include "common/file_handler.h"
+
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 
 #define DEFAULT_ERROR_LOG "NLog Handler Error"
 
 const int LOG_BUF_LEN = 512;
+const int LOG_TAG_LEN = 10;
+const int LOG_WRITE_LEN = LOG_BUF_LEN + LOG_TAG_LEN + 1;
+
 char LOG_BUFFER[LOG_BUF_LEN];
+char LOG_WRITE_BUFFER[LOG_WRITE_LEN];
+
+const fs::path NLOG_DIR_PATH = fs::path(PROJECT_RUNTIME_OUTPUT_PATH).append("log");
+const fs::path NLOG_FILE_PATH = fs::path(PROJECT_RUNTIME_OUTPUT_PATH).append("log").append("logfile");
 
 const char *LevelTag(NLogLevel level)
 {
@@ -60,7 +69,7 @@ NLog::NLog(NLogLevel level, const char *log, int len)
 	level_ = level;
 	log_ = new char[len + 1];
 	memset(log_, 0, len + 1);
-	strncpy(log_, log, len);
+	memmove(log_, log, len);
 	time(&time_);
 }
 
@@ -71,29 +80,82 @@ NLog::~NLog()
 
 void NLogManager::Handle(NLog *log)
 {
+	memset(LOG_WRITE_BUFFER, 0, LOG_WRITE_LEN);
+	snprintf(LOG_WRITE_BUFFER, LOG_WRITE_LEN, "%s %s\n", log->GetLevelTag(), log->GetNLog());
+
+	switch (log->GetLevel())
 	{
-		switch (log->GetLevel())
-		{
-		case NLogLevel::DEBUG:
-		case NLogLevel::LOG:
-		case NLogLevel::NOTICE:
-		case NLogLevel::WARNING:
-		case NLogLevel::ERROR:
-		{
-			struct tm *p = localtime(&log->Time());
-			printf("%d/%d/%d %02d:%02d:%02d %s %s\n",
-				   1900 + p->tm_year,
-				   p->tm_mon,
-				   p->tm_mday,
-				   p->tm_hour,
-				   p->tm_min,
-				   p->tm_sec,
-				   log->GetLevelTag(),
-				   log->GetNLog());
-		}
-		break;
-		default:
-			break;
-		}
+	case NLogLevel::DEBUG:
+	case NLogLevel::LOG:
+	case NLogLevel::NOTICE:
+	case NLogLevel::WARNING:
+	case NLogLevel::ERROR:
+	{
+		// struct tm *p = localtime(&log->Time());
+		// printf("%d/%d/%d %02d:%02d:%02d %s %s\n",
+		// 	   1900 + p->tm_year,
+		// 	   p->tm_mon,
+		// 	   p->tm_mday,
+		// 	   p->tm_hour,
+		// 	   p->tm_min,
+		// 	   p->tm_sec,
+		// 	   log->GetLevelTag(),
+		// 	   log->GetNLog());
+		printf("%s", LOG_WRITE_BUFFER);
 	}
+	break;
+	default:
+		// todo error unrecognized log type
+		assert(false);
+	}
+
+	FileHandler::Write(NLOG_FILE_PATH, LOG_WRITE_BUFFER, strlen(LOG_WRITE_BUFFER), "a");
+}
+
+void NLogManager::Release()
+{
+	// delete obj
+}
+
+NLogManager &NLogManager::Instance()
+{
+	static NLogManager instance;
+	return instance;
+}
+
+void NLogManager::MakeLogDirectory()
+{
+	// todo add identify for some thing to divide different part of all logs
+	// at least from different client
+	if (!fs::exists(NLOG_DIR_PATH))
+		fs::create_directory(NLOG_DIR_PATH);
+	if (!fs::is_directory(NLOG_DIR_PATH))
+	{
+		// todo what to do if not directroy file exists -- (idk what will happen if file has same
+		// name with dir)
+		assert(false);
+	}
+}
+
+void NLogManager::MakeLogFile()
+{
+	// todo we use only one logfile called "logfile", as we did not determine how to divide
+	if (!fs::exists(NLOG_FILE_PATH))
+	{
+		FILE *nlog_file = fopen(NLOG_FILE_PATH.c_str(), "w");
+
+		if (nlog_file == nullptr)
+		{
+			// todo error create nlog file failed
+			assert(false);
+		}
+
+		fclose(nlog_file);
+	}
+}
+
+NLogManager::NLogManager()
+{
+	MakeLogDirectory();
+	MakeLogFile();
 }
